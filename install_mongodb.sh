@@ -6,4 +6,6 @@ echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongod
 sudo apt update
 sudo apt-get install -y mongodb-org
 
-sudo systemctl start mongod && sudo systemctl enable mongod && sudo systemctl status mongodb
+sudo systemctl start mongodb
+sudo systemctl enable mongodb
+sudo systemctl status mongodb
