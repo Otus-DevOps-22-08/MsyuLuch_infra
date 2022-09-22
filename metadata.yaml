@@ -1,0 +1,25 @@
+#cloud-config
+
+repo_update: true
+repo_upgrade: true
+
+users:
+  - name: appuser
+    groups: sudo
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC4wDyAE3c93CuTVGlLkqADkyhT25hJmqwGHFGKepYg9xA7VCFNiE47nzTTRqpvOsPKiCU9JkE+ibXNpWzYrc8xTL09We+OVi996y7oy1xEZny0V6OeZ1RgpsX/k78nADNsRv/jrpAucI6WgV5EiJHtVqhqLWdCGgKNnN8GAlOEYibsTeYcfu0bpzEC75frJEnw+c7x5oeg/umL+tSM3QgU7YPkQmGTbojIBSJmS2JFEQ8k+dzmcPWJvkUKkVgBDjLvhPXRyI1brDUxMuBHO8Duw6NqjjjxjUzvCKIAKAYz+Xd1jXOu5bcXb70jQntM1vnwwn0ApgK/NcXhoksEKNG5r/UvAk0Jk9aKvh6Rh2PXGEo0NURTFfAL2PZ+rIFTKoWA2nH6UQ8ZbHxBQM56+x89xCpJHqDTkYbEiDzsBBNgVjnkv+BCqivrKaLbDGmn1gf4Q2t1QmfwSls5KGBe0y5zA4c8AZhEACx+2DzWZ/BKPndLLLfEg+dWRA0/7vlE/F8= appuser
+
+packages:
+  - ruby-full
+  - ruby-bundler
+  - build-essential
+  - git
+  - gnupg
+
+runcmd:
+  - echo "Running userdata script as $(whoami) from $(pwd)"
+  - git clone https://github.com/MsyuLuch/git-hub-test.git
+  - chmod +x git-hub-test/startup.sh
+  - sh git-hub-test/startup.sh
