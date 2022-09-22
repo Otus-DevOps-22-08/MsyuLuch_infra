@@ -1,84 +1,64 @@
 # MsyuLuch_infra
 MsyuLuch Infra repository
 
-# Выполнено ДЗ № 3
+# Выполнено ДЗ № 4
 
  - [+] Основное ДЗ
  - [+] Задание со *
 
 ## В процессе сделано:
- 1. Генерируем ключь для пользователя appuser
+ 1. Устанавливаем и настраиваем YC CLI
 
     ```
-    ssh-keygen -t rsa -f ~/.ssh/appuser -C appuser -P ""
+    $ yc config list
+    $ yc config profile list
 
     ```
 
- 2. Создаем 2 ВМ (bastion, someinternalhost)
-
-    для подключения с локальной машины на bastion:
-    ```
-    $ ssh -i ~/.ssh/appuser appuser@51.250.13.237
-    ```
-
-    для подключения к someinternalhost настроим SSH Forwarding и
-    добавим приватный ключ в ssh агент авторизации:
-    ```
-    $ ssh-add -L
-    $ ssh-add ~/.ssh/appuser
-    $ ssh -i ~/.ssh/appuser -A appuser@51.250.13.237
-
-    appuser@bastion:~$ ssh 10.128.0.28
-    ```
-    подключения к someinternalhost в одну команду с локальной машины (-J флаг для указания хоста, который будет выступать как прокси):
+ 2. Создаем инстанс `reddit-app`
 
     ```
-    $ ssh -i ~/.ssh/appuser -A -J appuser@51.250.13.237 appuser@10.128.0.28
+    yc compute instance create \
+        --name reddit-app \
+        --hostname reddit-app \
+        --memory=4 \
+        --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-2004-lts,size=10GB \
+        --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
+        --metadata serial-port-enable=1 \
+        --ssh-key ~/.ssh/appuser.pub
     ```
 
-    если список хостов перехода статический можно описать его с помощью конфигурационного файла:
+    Для того, чтобы развернуть приложение на созданной ВМ, необходимо подключиться к ВМ, перенести на нее скрипты и запустить их:
 
     ```
-    FILE ~/.ssh/configProxyJump Example
-    ### First jump host. Directly reachable
-    Host bastion
-     User appuser
-     HostName 51.250.13.237
+    $ssh yc-user@51.250.91.225
 
-    ### Host to jump to via bastion
-    Host someinternalhost
-     User appuser
-     HostName 10.128.0.28
-     ProxyJump  bastion
+    $sh install_ruby.sh
+    $sh install_mongodb.sh
+    $sh deploy.sh
     ```
 
-    и теперь можно напрямую обратиться к хосту someinternalhost
+    Для автоматического развертывания приложения на вновь созданной ВМ, указываем при создании файл `metadata.yaml`, в котором прописываем все действия по установке приложения:
 
     ```
-    $ ssh someinternalhost
-    ```
-
-3. Создаем VPN-сервер для серверов Yandex.Cloud
-
-    Для этого развернем на ВМ докер и запустим контейнер с VPN-сервером Pritunl
-
-    Конфигурационный файл для Pritunl доступен в репозитории
-
-    Проверяем возможность подключения к someinternalhost с локального компьютера после подключения к VPN:
-
-    ```
-    $ ssh -i ~/.ssh/appuser appuser@10.128.0.28
-    $ ssh -i ~/.ssh/appuser appuser@someinternalhost
+    $ yc compute instance create \
+        --name reddit-app \
+        --hostname reddit-app \
+        --memory=4 \
+        --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-2004-lts,size=10GB \
+        --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
+        --metadata serial-port-enable=1 \
+        --metadata-from-file user-data=metadata.yaml
     ```
 
 ## Как запустить проект:
 
-    bastion_IP = 51.250.13.237
-    someinternalhost_IP = 10.128.0.28
+    testapp_IP = 51.250.91.225
+    testapp_port = 9292
 
 ## Как проверить работоспособность:
 
-   https://primsyu.tk/
+    http://51.250.91.225:9292/
 
 ## PR checklist
  - [+] Выставил label с темой домашнего задания
