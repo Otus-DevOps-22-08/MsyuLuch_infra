@@ -1,64 +1,60 @@
 # MsyuLuch_infra
 MsyuLuch Infra repository
 
-# Выполнено ДЗ № 4
+# Выполнено ДЗ № 5
 
  - [+] Основное ДЗ
  - [+] Задание со *
 
 ## В процессе сделано:
- 1. Устанавливаем и настраиваем YC CLI
+ 1. Создаем файл-шаблон для Packer в формате *.json, *.hcl
 
     ```
-    $ yc config list
-    $ yc config profile list
-
+    $ packer validate ./ubuntu1604.json
+    $ packer hcl2_upgrade ubuntu1604.json
+    $ packer validate ./ubuntu1604.pkr.hcl
     ```
 
- 2. Создаем инстанс `reddit-app`
+2. Запускаем сборку образа. Для проверки образа приложение нужно установить вручную
 
     ```
-    yc compute instance create \
-        --name reddit-app \
-        --hostname reddit-app \
-        --memory=4 \
-        --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-2004-lts,size=10GB \
-        --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
-        --metadata serial-port-enable=1 \
-        --ssh-key ~/.ssh/appuser.pub
+    $ packer build -var-file=variables.json ubuntu1604.json
+    $ packer build -var-file=variables.hcl ubuntu1604.pkr.hcl
     ```
 
-    Для того, чтобы развернуть приложение на созданной ВМ, необходимо подключиться к ВМ, перенести на нее скрипты и запустить их:
+3. Описываем шаблон для Immutable образа с предустановленным приложением
 
     ```
-    $ssh yc-user@51.250.91.225
+    $ packer build -var-file=variables.hcl immutable.pkr.hcl
 
-    $sh install_ruby.sh
-    $sh install_mongodb.sh
-    $sh deploy.sh
+    $ yc compute image list
     ```
 
-    Для автоматического развертывания приложения на вновь созданной ВМ, указываем при создании файл `metadata.yaml`, в котором прописываем все действия по установке приложения:
+    Для автоматического создания ВМ с предустановленным приложением запускаем
 
     ```
     $ yc compute instance create \
         --name reddit-app \
         --hostname reddit-app \
         --memory=4 \
-        --create-boot-disk image-folder-id=standard-images,image-family=ubuntu-2004-lts,size=10GB \
+        --create-boot-disk image-folder-id=b1g6q04gp8vhlg95vctg,image-family=reddit-full,size=10GB \
         --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
         --metadata serial-port-enable=1 \
-        --metadata-from-file user-data=metadata.yaml
+        --ssh-key ~/.ssh/appuser.pub
     ```
 
 ## Как запустить проект:
 
-    testapp_IP = 51.250.91.225
+    testapp_IP = 84.252.129.67
     testapp_port = 9292
+
+    1. Команда создания образа `packer build -var-file=variables.hcl ubuntu1604.pkr.hcl`
+    2. Команда создания immutable образа `packer build -var-file=variables.hcl immutable.pkr.hcl`
+    3. Скрипт создания ВМ из immutable образа `config-scripts/create-reddit-vm.sh`
 
 ## Как проверить работоспособность:
 
-    http://51.250.91.225:9292/
+    http://84.252.129.67:9292/
 
 ## PR checklist
  - [+] Выставил label с темой домашнего задания
