@@ -1,7 +1,7 @@
 {
         "folder_id": "g8d9fgud9fgu89dfg7ud",
 
-        "path_to_keyfile": "~/.ssh/key.json",
+        "path_to_keyfile": ".ssh/key.json",
         "source_image_family": "ubuntu-1604-lts",
 	"subnet_id": "gzs89erg789sdygv8zsd",
         "zone": "ru-central1-a"
