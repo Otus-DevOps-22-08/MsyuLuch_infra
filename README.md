@@ -10,16 +10,16 @@ MsyuLuch Infra repository
  1. Создаем файл-шаблон для Packer в формате *.json, *.hcl
 
     ```
-    $ packer validate ./ubuntu1604.json
-    $ packer hcl2_upgrade ubuntu1604.json
-    $ packer validate ./ubuntu1604.pkr.hcl
+    $ packer validate ./ubuntu16.json
+    $ packer hcl2_upgrade ubuntu16.json
+    $ packer validate ./ubuntu16.pkr.hcl
     ```
 
 2. Запускаем сборку образа. Для проверки образа приложение нужно установить вручную
 
     ```
-    $ packer build -var-file=variables.json ubuntu1604.json
-    $ packer build -var-file=variables.hcl ubuntu1604.pkr.hcl
+    $ packer build -var-file=variables.json ubuntu16.json
+    $ packer build -var-file=variables.hcl ubuntu16.pkr.hcl
     ```
 
 3. Описываем шаблон для Immutable образа с предустановленным приложением
@@ -48,7 +48,7 @@ MsyuLuch Infra repository
     testapp_IP = 84.252.129.67
     testapp_port = 9292
 
-    1. Команда создания образа `packer build -var-file=variables.hcl ubuntu1604.pkr.hcl`
+    1. Команда создания образа `packer build -var-file=variables.hcl ubuntu16.pkr.hcl`
     2. Команда создания immutable образа `packer build -var-file=variables.hcl immutable.pkr.hcl`
     3. Скрипт создания ВМ из immutable образа `config-scripts/create-reddit-vm.sh`
 
