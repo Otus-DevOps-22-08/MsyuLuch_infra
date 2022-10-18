@@ -1,60 +1,61 @@
 # MsyuLuch_infra
 MsyuLuch Infra repository
 
-# Выполнено ДЗ № 5
+# Выполнено ДЗ № 6
 
  - [+] Основное ДЗ
  - [+] Задание со *
 
 ## В процессе сделано:
- 1. Создаем файл-шаблон для Packer в формате *.json, *.hcl
+ 1. Создаем файлы-шаблоны для Terraform в формате *.tf
 
     ```
-    $ packer validate ./ubuntu16.json
-    $ packer hcl2_upgrade ubuntu16.json
-    $ packer validate ./ubuntu16.pkr.hcl
+    variables.tf - описание всех переменных проекта
+    main.tf - основная конфигурация ВМ
+    lb.tf - описание балансировщика
+    output.tf - описание выводимых на экран значений
     ```
 
-2. Запускаем сборку образа. Для проверки образа приложение нужно установить вручную
+2. Основные команды Terraform
 
     ```
-    $ packer build -var-file=variables.json ubuntu16.json
-    $ packer build -var-file=variables.hcl ubuntu16.pkr.hcl
+    $ terraform validate
+    $ terraform plan
+    $ terraform apply
     ```
 
-3. Описываем шаблон для Immutable образа с предустановленным приложением
+3. После отработки команд будет создано 2 идентичных виртуальных машины и поднят балансировщик
+
+    Для описания нескольких одинаковых ресурсов используется `count` (ресурс или модуль будем реплицирован определенное количество раз с увеличивающимся счетчиком)
 
     ```
-    $ packer build -var-file=variables.hcl immutable.pkr.hcl
-
-    $ yc compute image list
+    resource "yandex_compute_instance" "app" {
+        count                     = var.count_app
+        name = "reddit-app${count.index + 1}"
+    }
     ```
 
-    Для автоматического создания ВМ с предустановленным приложением запускаем
-
-    ```
-    $ yc compute instance create \
-        --name reddit-app \
-        --hostname reddit-app \
-        --memory=4 \
-        --create-boot-disk image-folder-id=b1g6q04gp8vhlg95vctg,image-family=reddit-full,size=10GB \
-        --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
-        --metadata serial-port-enable=1 \
-        --ssh-key ~/.ssh/appuser.pub
-    ```
 
 ## Как запустить проект:
 
-    testapp_IP = 84.252.129.67
+    Load Balancer:
+    testapp_IP = 84.252.129.18
+
+    VM 1:
+    testapp_IP = 178.154.227.162
     testapp_port = 9292
 
-    1. Команда создания образа `packer build -var-file=variables.hcl ubuntu16.pkr.hcl`
-    2. Команда создания immutable образа `packer build -var-file=variables.hcl immutable.pkr.hcl`
-    3. Скрипт создания ВМ из immutable образа `config-scripts/create-reddit-vm.sh`
+    VM 2:
+    testapp_IP = 178.154.224.89
+    testapp_port = 9292
+
+    1. В проект добавлены разные публикации на страницах. Работу балансировщика можно протестировать, обновляя страницу
+
+    http://84.252.129.18/
 
 ## Как проверить работоспособность:
 
-    http://84.252.129.67:9292/
+    http://84.252.129.18/
 
 ## PR checklist
  - [+] Выставил label с темой домашнего задания
