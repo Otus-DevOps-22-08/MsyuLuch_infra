@@ -6,4 +6,4 @@ public_key_path          = "~/.ssh/appuser.pub"
 subnet_id                = "e936j3h4ju6h346j34j6"
 service_account_key_file = "key.json"
 private_key_path         = "~/.ssh/appuser"
-count_app                = 2
+count_app                = 1
