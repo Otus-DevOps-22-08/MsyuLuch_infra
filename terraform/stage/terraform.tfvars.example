@@ -1,0 +1,9 @@
+cloud_id                 = "j56h4j5k6h4j56h45j6h"
+folder_id                = "j56h4j5kthw4u5y345yh"
+zone                     = "ru-central1-a"
+image_id                 = "j56h4456j4k5jhyklj6h"
+public_key_path          = "~/.ssh/appuser.pub"
+subnet_id                = "e936j3h4ju6h346j34j6"
+service_account_key_file = "key.json"
+private_key_path         = "~/.ssh/appuser"
+count_app                = 2
