@@ -1,2 +1,11 @@
 /packer/variables.json
 /packer/variables.hcl
+/packer/.ssh/key.json
+*key.json
+*.tfstate
+*.tfstate.*.backup
+*.tfstate.backup
+*.tfvars
+.terraform/
+/terraform/key.json
+/folder/

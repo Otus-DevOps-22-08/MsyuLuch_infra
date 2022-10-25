@@ -7,3 +7,5 @@ subnet_id                = "e936j3h4ju6h346j34j6"
 service_account_key_file = "key.json"
 private_key_path         = "~/.ssh/appuser"
 count_app                = 1
+app_disk_image           = "j56h4j5kthw4u5y345yh"
+db_disk_image            = "j56h4j5kthw4u5y345yh"

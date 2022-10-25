@@ -1,60 +1,40 @@
 # MsyuLuch_infra
 MsyuLuch Infra repository
 
-# Выполнено ДЗ № 5
+# Выполнено ДЗ № 7
 
  - [+] Основное ДЗ
- - [+] Задание со *
+ - [] Задание со *
 
 ## В процессе сделано:
- 1. Создаем файл-шаблон для Packer в формате *.json, *.hcl
+ 1. Создали образы с предустановленными приложениями, с помощью `packer` и скриптов: `install_mongodb.sh` и `install_ruby.sh`
+
+ 2. Конфигурацию разбили на модули: app, db. Конфигурация модулей отличается только используемым образом диска, созданным на предыдущем шаге.
+
+ 3. В директории terrafrom создали директории stage, prod. В каждом одинаковый набор файлов для разворачивания двух окружений. Модули используются повторно в каждом окружении.
 
     ```
-    $ packer validate ./ubuntu16.json
-    $ packer hcl2_upgrade ubuntu16.json
-    $ packer validate ./ubuntu16.pkr.hcl
-    ```
-
-2. Запускаем сборку образа. Для проверки образа приложение нужно установить вручную
-
-    ```
-    $ packer build -var-file=variables.json ubuntu16.json
-    $ packer build -var-file=variables.hcl ubuntu16.pkr.hcl
-    ```
-
-3. Описываем шаблон для Immutable образа с предустановленным приложением
-
-    ```
-    $ packer build -var-file=variables.hcl immutable.pkr.hcl
-
-    $ yc compute image list
-    ```
-
-    Для автоматического создания ВМ с предустановленным приложением запускаем
-
-    ```
-    $ yc compute instance create \
-        --name reddit-app \
-        --hostname reddit-app \
-        --memory=4 \
-        --create-boot-disk image-folder-id=b1g6q04gp8vhlg95vctg,image-family=reddit-full,size=10GB \
-        --network-interface subnet-name=default-ru-central1-a,nat-ip-version=ipv4 \
-        --metadata serial-port-enable=1 \
-        --ssh-key ~/.ssh/appuser.pub
+    variables.tf - описание переменных проекта
+    main.tf - основная конфигурация ВМ
+    output.tf - описание выводимых на экран значений
     ```
 
 ## Как запустить проект:
 
-    testapp_IP = 84.252.129.67
-    testapp_port = 9292
+    В дирректории `stage` или `prod` выполнить команды
 
-    1. Команда создания образа `packer build -var-file=variables.hcl ubuntu16.pkr.hcl`
-    2. Команда создания immutable образа `packer build -var-file=variables.hcl immutable.pkr.hcl`
-    3. Скрипт создания ВМ из immutable образа `config-scripts/create-reddit-vm.sh`
+    ```
+    $ terraform validate
+    $ terraform plan
+    $ terraform apply
+    ```
 
 ## Как проверить работоспособность:
 
-    http://84.252.129.67:9292/
+    Через ssh попадаем на хосты и проверяем:
+
+    app: установлены `ruby-full ruby-bundler build-essential`
+    db: установлена БД `mongodb-org` и слушается локальный порт
 
 ## PR checklist
  - [+] Выставил label с темой домашнего задания
