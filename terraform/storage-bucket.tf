@@ -4,8 +4,8 @@
     bucket     = "bucket-stage"
     region     = "ru-central1"
     key        = "terraform.tfstate"
-    access_key = "YCAJEnuUUmY67a2Z50Seb_Hu6"
-    secret_key = "YCMoiFR_zkwX0a3zOTkbXoEgoEDuA3wCYF3CpNsu"
+    access_key = "KEY"
+    secret_key = "KEY"
 
     skip_region_validation      = true
     skip_credentials_validation = true
