@@ -8,7 +8,7 @@
             "image_name": "reddit-base-{{timestamp}}",
             "image_family": "reddit-base",
             "ssh_username": "ubuntu",
-	    "subnet_id": "{{user `subnet_id`}}",
+	        "subnet_id": "{{user `subnet_id`}}",
             "zone": "{{user `zone`}}",
             "platform_id": "standard-v1",
             "use_ipv4_nat": true
@@ -16,9 +16,8 @@
     ],
     "provisioners": [
         {
-            "type": "shell",
-            "script": "scripts/install_mongodb.sh",
-            "execute_command": "sudo {{.Path}}"
+            "type": "ansible",
+            "playbook_file": "ansible/packer_db.yml"
         }
     ]
 }

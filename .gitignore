@@ -1,7 +1,8 @@
 /packer/variables.json
 /packer/variables.hcl
 /packer/.ssh/key.json
-*key.json
+/terraform/stage/key.json
+/terraform/prod/key.json
 *.tfstate
 *.tfstate.*.backup
 *.tfstate.backup
@@ -9,3 +10,7 @@
 .terraform/
 /terraform/key.json
 /folder/
+/terraform/storage-bucket.tf
+/terraform/stage/backend.tf
+terraform/stage/backend.tf
+*.retry
