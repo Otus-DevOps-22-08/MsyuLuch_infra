@@ -27,7 +27,7 @@ MsyuLuch Infra repository
     - `packer_app.yml` - устанавливает Ruby и Bundler
     - `packer_db.yml` - добавляет репозиторий MongoDB, устанавливает MongoDB и запускает сервис
 
-    В диретории `packer` изменим `app.pkr.hcl` и `db.pkr.hcl`:
+    В директории `packer` изменим `app.pkr.hcl` и `db.pkr.hcl`:
 
     ```
         provisioner "ansible" {
