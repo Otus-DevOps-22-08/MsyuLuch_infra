@@ -1,6 +1,8 @@
 /packer/variables.json
 /packer/variables.hcl
 /packer/.ssh/key.json
+/terraform/stage/key.json
+/terraform/prod/key.json
 *.tfstate
 *.tfstate.*.backup
 *.tfstate.backup
