@@ -1,86 +1,60 @@
 # MsyuLuch_infra
 MsyuLuch Infra repository
 
-# Выполнено ДЗ № 8
+# Выполнено ДЗ № 9
 
  - [+] Основное ДЗ
  - [] Задание со *
 
 ## В процессе сделано:
- 1. Создана директория `Ansible`:
+ 1. В директории `аnsible`:
     - `inventory`, `inventory.yml` - описание инстансов, которыми будем управлять
     - `ansible.cfg` - конфигурационный файл, в котором указаны основные, общие параметры для подключения к инстансам
-    - `clone.yml` - ansible playbook клонирует удаленный репозоторий в домашнюю директорию пользователя
+    - `site.yml` - ansible playbook основной, подключает:
+        - `db.yml` - ansible playbook изменяет конфигурацию БД
+        - `app.yml` - ansible playbook настраивает хост приложения
+        - `deploy.yml` - ansible playbook деплой приложения
 
- 2. Основные команды:
+ 2. Запустим ansible playbook
 
  ```
-        $ ansible app -m ping
-        $ ansible app -m command -a 'ruby -v'
-        $ ansible app -m shell -a 'ruby -v; bundler -v'
-
-        $ ansible db -m command -a 'systemctl status mongod'
-        $ ansible db -m shell -a 'systemctl status mongod'
-        $ ansible db -m service -a name=mongod
-
-        $ ansible app -m git -a \
-            'repo=https://github.com/express42/reddit.git dest=/home/appuser/reddit'
-        $ ansible app -m command -a \
-            'git clone https://github.com/express42/reddit.git /home/appuser/reddit'
-
-        $ ansible-playbook clone.yml
+        $ ansible-playbook --check site.yml
+        $ ansible-playbook site.yml
  ```
 
- 3. Запустим ansible playbook
+ 3. Изменим provision в Packer и заменим bash-скрипты на ansible playbook
+
+    - `packer_app.yml` - устанавливает Ruby и Bundler
+    - `packer_db.yml` - добавляет репозиторий MongoDB, устанавливает MongoDB и запускает сервис
+
+    В диретории `packer` изменим `app.pkr.hcl` и `db.pkr.hcl`:
 
     ```
-        $ ansible-playbook clone.yml
-    ```
-    Результатом работы будет клонирование удаленного репозитория в папку пользователя. Затем выполним команду:
-
-    ```
-        $ ansible app -m command -a 'rm -rf ~/reddit'
-    ```
-    В результате папка с репозиторием будет удалена из директории пользователя
-
-    Если теперь повторно запустить команду:
-    ```
-        $ ansible-playbook clone.yml
-        PLAY [Clone] ***********************************************************************************
-        TASK [Gathering Facts]**************************************************************************
-        ok: [appserver]
-        TASK [Clone repo]*******************************************************************************
-        changed: [appserver]
-        PLAY RECAP *************************************************************************************
-        appserver: ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+        provisioner "ansible" {
+            playbook_file = "ansible/packer_app.yml"
+        }
+    ........
+        provisioner "ansible" {
+            playbook_file = "ansible/packer_db.yml"
+        }
     ```
 
-    Ansible скачает удаленный репозиторий повторно.
-    Ansible не хранит текущего сосотояния после выполнения команд. Каждая команда будет отработана повторно.
+    Пересоздадим инфраструктуру с помощью `terraform apply` и запустим `ansible-playbook site.yml`
+
+    Доступность прилождения проверим http://51.250.72.52:9292/
+
 
 ## Как запустить проект:
 
-    - Установить Ansible 2.4 и выше
-    - Установить Python 2.7 и выше
+        ```
+        .../terraform/stage$ terraform apply
+
+        .../ansible$ ansible-playbook site.yml
+        ```
 
 ## Как проверить работоспособность:
 
-    ```
-            $ ansible app -m ping
-            $ ansible app -m command -a 'ruby -v'
-            $ ansible app -m shell -a 'ruby -v; bundler -v'
-
-            $ ansible db -m command -a 'systemctl status mongod'
-            $ ansible db -m shell -a 'systemctl status mongod'
-            $ ansible db -m service -a name=mongod
-
-            $ ansible app -m git -a \
-                'repo=https://github.com/express42/reddit.git dest=/home/appuser/reddit'
-            $ ansible app -m command -a \
-                'git clone https://github.com/express42/reddit.git /home/appuser/reddit'
-
-            $ ansible-playbook clone.yml
-    ```
+    http://51.250.72.52:9292/
 
 ## PR checklist
  - [+] Выставил label с темой домашнего задания

@@ -9,3 +9,7 @@
 .terraform/
 /terraform/key.json
 /folder/
+/terraform/storage-bucket.tf
+/terraform/stage/backend.tf
+terraform/stage/backend.tf
+*.retry
