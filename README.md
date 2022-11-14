@@ -1,19 +1,22 @@
 # MsyuLuch_infra
 MsyuLuch Infra repository
 
-# Выполнено ДЗ № 9
+Status of Last Deployment: <br>
+<img src="https://github.com/Otus-DevOps-22-08/MsyuLuch_infra/actions/workflows/run-tests.yml/badge.svg?branch=master"><br>
+
+# Выполнено ДЗ № 10
 
  - [+] Основное ДЗ
  - [] Задание со *
 
 ## В процессе сделано:
- 1. В директории `аnsible`:
-    - `inventory`, `inventory.yml` - описание инстансов, которыми будем управлять
-    - `ansible.cfg` - конфигурационный файл, в котором указаны основные, общие параметры для подключения к инстансам
-    - `site.yml` - ansible playbook основной, подключает:
-        - `db.yml` - ansible playbook изменяет конфигурацию БД
-        - `app.yml` - ansible playbook настраивает хост приложения
-        - `deploy.yml` - ansible playbook деплой приложения
+ 1. Ansible playbook сделанные в предыдущих заданиях разнесены в    соответствующие директории:
+
+    - `roles/app` - роль для конфигурирования хоста приложения
+    - `roles/db` - роль для конфигурирования хоста базы данных
+    - `playbooks/` - основные плэйбуки
+    - `environment/` - описание среды окружения для stage, prod контура
+    - `environment/yc_compute.yml` - конфигурационный файл для     создание динамического инвентори
 
  2. Запустим ansible playbook
 
@@ -22,39 +25,35 @@ MsyuLuch Infra repository
         $ ansible-playbook site.yml
  ```
 
- 3. Изменим provision в Packer и заменим bash-скрипты на ansible playbook
+ 3. Установим коммьюнити-роли с портала Ansible Galaxy `jdauphant.nginx`. Добавим её запуск к ansible playbook `app.yml`.
 
-    - `packer_app.yml` - устанавливает Ruby и Bundler
-    - `packer_db.yml` - добавляет репозиторий MongoDB, устанавливает MongoDB и запускает сервис
+ 4. Для безопасной работы с приватными данными (пароли,
+приватные ключи и т.д.) используем механизм Ansible Vault:
 
-    В директории `packer` изменим `app.pkr.hcl` и `db.pkr.hcl`:
+    - файл `vault.key` хранит произвольную строку ключа для шифрования данных
+    - в файл `ansible.cfg` добавим ссылку на файл ключа
 
-    ```
-        provisioner "ansible" {
-            playbook_file = "ansible/packer_app.yml"
-        }
-    ........
-        provisioner "ansible" {
-            playbook_file = "ansible/packer_db.yml"
-        }
-    ```
+    - `credentials.yml` - хранит зашифрованные данные пользователей
 
-    Пересоздадим инфраструктуру с помощью `terraform apply` и запустим `ansible-playbook site.yml`
+5. Опишем роль для создания пользователей на хостах `users.yml`
 
-    Доступность прилождения проверим http://51.250.72.52:9292/
+
+6. Пересоздадим инфраструктуру с помощью `terraform apply` и запустим `ansible-playbook site.yml` (stage)
+
+    Доступность прилождения проверим http://51.250.71.102/
 
 
 ## Как запустить проект:
 
         ```
-        .../terraform/stage$ terraform apply
+        ...terraform apply
 
-        .../ansible$ ansible-playbook site.yml
+        ...ansible-playbook site.yml
         ```
 
 ## Как проверить работоспособность:
 
-    http://51.250.72.52:9292/
+    http://51.250.71.102/
 
 ## PR checklist
  - [+] Выставил label с темой домашнего задания
