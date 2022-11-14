@@ -1,0 +1,7 @@
+---
+# handlers file for db
+- name: Restart mongod
+  become: true
+  service:
+    name: mongod
+    state: restarted

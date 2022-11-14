@@ -22,8 +22,8 @@
         chdir: /home/ubuntu/reddit
 
   handlers:
-  - name: reload puma
-    become: true
-    systemd:
-      name: puma
-      state: restarted
+    - name: Reload puma
+      become: true
+      systemd:
+        name: puma
+        state: restarted

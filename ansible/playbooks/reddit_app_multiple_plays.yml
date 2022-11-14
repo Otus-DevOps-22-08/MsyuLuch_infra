@@ -14,11 +14,11 @@
       notify: restart mongod
 
   handlers:
-  - name: restart mongod
-    become: true
-    service:
-      name: mongod
-      state: restarted
+    - name: Restart mongod
+      become: true
+      service:
+        name: mongod
+        state: restarted
 
 - name: Configure App
   hosts: app
@@ -40,16 +40,16 @@
         owner: ubuntu
         group: ubuntu
 
-    - name: enable puma
+    - name: Enable puma
       systemd:
         name: puma
         enabled: yes
 
   handlers:
-  - name: reload puma
-    systemd:
-      name: puma
-      state: restarted
+    - name: Reload puma
+      systemd:
+        name: puma
+        state: restarted
 
 - name: Configure hosts & deploy application
   hosts: app
@@ -75,7 +75,7 @@
         chdir: /home/ubuntu/reddit
 
   handlers:
-  - name: reload puma
-    systemd:
-      name: puma
-      state: restarted
+    - name: Reload puma
+      systemd:
+        name: puma
+        state: restarted
