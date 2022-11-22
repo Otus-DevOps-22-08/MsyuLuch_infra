@@ -1,0 +1,26 @@
+- name: Add APT key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: "E162F504A20CDF15827F718D4B7C549A058F8B6B"
+  tags: install
+
+- name: Add APT repository
+  apt_repository:
+    filename: "/etc/apt/sources.list.d/mongodb-org-4.2.list"
+    repo: "deb https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/4.2 multiverse"
+    update_cache: true
+  tags: install
+
+- name: Install MongoDB package
+  apt:
+    name: mongodb-org
+    state: present
+    update_cache: true
+  tags: install
+
+- name: Configure service supervisor
+  systemd:
+    name: mongod
+    enabled: yes
+    state: started
+  tags: install
