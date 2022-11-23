@@ -24,3 +24,17 @@ jobs:
 
     - name: Run tests
       run: curl https://raw.githubusercontent.com/express42/otus-homeworks/2022-08/run.sh | bash
+
+
+  Packer_validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Validate packer files
+        run: |
+          packer validate -var-file=./packer/variables.hcl ./packer/app.pkr.hcl
+          packer validate -var-file=./packer/variables.hcl ./packer/db.pkr.hcl
