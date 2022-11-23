@@ -1,0 +1,5 @@
+folder_id="FolderID"
+path_to_keyfile = "packer/.ssh/key.json"
+source_image_family = "ubuntu-1604-lts"
+subnet_id = "SubnetID"
+zone = "ru-central1-a"
